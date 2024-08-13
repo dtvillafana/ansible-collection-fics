@@ -20,7 +20,7 @@ short_description: Calls the FICS Mortgage Servicer special services API to crea
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.0.0"
+version_added: "1.0.1"
 
 description:
     - Calls the FICS Mortgage Servicer special services API to create the Allied Insurance file at the specified destination
@@ -33,7 +33,7 @@ requirements: [ ]
 
 options:
     dest:
-        description: This is the full path where the file will be created, it creates parent directories if they do not exist
+        description: This is the full path to where the file will be created, it creates parent directories if they do not exist
         required: true
         type: str
     special_service_api_url:
@@ -41,7 +41,7 @@ options:
         required: true
         type: str
     api_token:
-        description: this is the api token used for authentication
+        description: this is the api token used for authentication to the API
         required: true
         type: str
 
@@ -50,7 +50,7 @@ options:
 EXAMPLES = r"""
 - name: create file to send
   allied_insurance_interface_program:
-    dest: /mnt/fics/Mortgage Services/MS_TEST/Allied Interface/
+    dest: /mnt/fics/Mortgage Services/MS_TEST/Allied Interface/file.txt
     special_service_api_url: http://mortgageservicer.fics/SpecialsService.svc/REST/
     api_token: ASDFASDFJSDFSHFJJSDGFSJGQWEUI123123SDFSDFJ12312801C15034264BC98B33619F4A547AECBDD412D46A24D2560D5EFDD8DEDFE74325DC2E7B156C60B942
 """
