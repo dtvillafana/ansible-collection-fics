@@ -20,7 +20,7 @@ short_description: Calls the FICS Mortgage Servicer special services API to crea
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.0.1"
+version_added: "1.0.2"
 
 description:
     - Calls the FICS Mortgage Servicer special services API to create the Allied Insurance file at the specified destination
@@ -59,7 +59,9 @@ RETURN = r"""
 """
 
 
-def call_api(base_url: str, method: str, endpoint: str, parameters: dict, module: dict) -> Optional[dict]:
+def call_api(
+    base_url: str, method: str, endpoint: str, parameters: dict, module: dict
+) -> Optional[dict]:
     headers = {
         "Content-Type": "application/json",
     }
@@ -75,12 +77,18 @@ def call_api(base_url: str, method: str, endpoint: str, parameters: dict, module
             base_url + endpoint, json=parameters, headers=headers
         )
     else:
-        module.fail_json(msg=f"Invalid API method '{method}'", changed=False, failed=True)
+        module.fail_json(
+            msg=f"Invalid API method '{method}'", changed=False, failed=True
+        )
 
     if response.status_code == 200:
         return response.json()
     else:
-        module.fail_json(msg=f"Error response code ({response.status_code}) from api call: {response.text}", changed=False, failed=True)
+        module.fail_json(
+            msg=f"Error response code ({response.status_code}) from api call: {response.text}",
+            changed=False,
+            failed=True,
+        )
 
 
 def get_create_allied_insurance_interface_file(module: dict) -> Optional[dict]:
@@ -110,7 +118,11 @@ def get_create_allied_insurance_interface_file(module: dict) -> Optional[dict]:
         }
     }
     return call_api(
-        module.params["special_service_api_url"], "post", "CreateAlliedInsuranceInterfaceFile", parameters=params, module=module
+        module.params["special_service_api_url"],
+        "post",
+        "CreateAlliedInsuranceInterfaceFile",
+        parameters=params,
+        module=module,
     )
 
 
@@ -145,7 +157,9 @@ def run_module():
     try:
         os.makedirs(name=str(os.path.dirname(output_file_path)), exist_ok=True)
     except Exception as e:
-        module.fail_json(msg=f"failed to create parent directories: {e}", changed=False, failed=True)
+        module.fail_json(
+            msg=f"failed to create parent directories: {e}", changed=False, failed=True
+        )
 
     api_response: dict = get_create_allied_insurance_interface_file(module)
     try:
@@ -165,7 +179,12 @@ def run_module():
                 result["msg"] = "no file retrieved"
                 result["api_response"] = api_response
         else:
-            module.fail_json(msg="API call unsuccessful", changed=False, failed=True, api_response=api_response)
+            module.fail_json(
+                msg="API call unsuccessful",
+                changed=False,
+                failed=True,
+                api_response=api_response,
+            )
     except Exception as e:
         module.fail_json(msg=f"failed to create file: {e}", changed=False, failed=True)
 
