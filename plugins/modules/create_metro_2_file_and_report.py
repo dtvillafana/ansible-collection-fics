@@ -17,7 +17,7 @@ DOCUMENTATION = r"""
 ---
 module: create_metro_2_file_and_report
 
-short_description: Calls the FICS Mortgage Servicer special services API to create the credit burea files at the specified location
+short_description: Calls the FICS Mortgage Servicer special services API to create the credit bureau files at the specified location
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
