@@ -16,24 +16,22 @@ DOCUMENTATION = r"""
 ---
 module: get_trial_balance_report
 
-short_description: Calls the FICS Mortgage Servicer special services API to create the credit bureau files at the specified location
+short_description: Calls the FICS Mortgage Servicer special services API to create the trial balance report pdf at the desired location
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
 version_added: "1.0.3"
 
 description:
-    - Calls the FICS Mortgage Servicer special services API to create the credit burea files at the specified location
+    - Calls the FICS Mortgage Servicer special services API to create the trial balance report pdf at the desired location
     - Disclaimer: this module has only been tested for our exact use case
 
 author:
     - David Villafaña IV
 
 requirements:
-     - functools >= 0.5
      - logging >= 0.4.9.6
      - requests >= 2.32.3
-     - datetime >= 5.5
 
 options:
     dest:
@@ -60,7 +58,7 @@ EXAMPLES = r"""
     dest: /mnt/fics/Mortgage Services/MS_TEST/Daily Reports/trial_balance_reports/trial_balance_report.pdf
     batch_service_api_url: http://mortgageservicer.fics/BatchService.svc/REST/
     api_token: ASDFASDFJSDFSHFJJSDGFSJGQWEUI123123SDFSDFJ12312801C15034264BC98B33619F4A547AECBDD412D46A24D2560D5EFDD8DEDFE74325DC2E7B156C60B942
-    api_log_directory: /mnt/fics/Mortgage Services/MS_TEST/Credit Bureau Reporting/archive/
+    api_log_directory: /mnt/fics/Mortgage Services/MS_TEST/api_logs/
 """
 
 RETURN = r"""
