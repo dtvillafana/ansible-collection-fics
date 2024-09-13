@@ -24,7 +24,7 @@ version_added: "1.0.3"
 
 description:
     - Calls the FICS Mortgage Servicer special services API to create the trial balance report pdf at the desired location
-    - Disclaimer: this module has only been tested for our exact use case
+    - Disclaimer, this module has only been tested for our exact use case
 
 author:
     - David Villafaña IV
