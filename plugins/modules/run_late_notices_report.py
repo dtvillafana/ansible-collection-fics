@@ -5,6 +5,7 @@
 from __future__ import absolute_import, division, print_function
 from ansible.module_utils.basic import AnsibleModule
 from typing import Callable, Any
+from datetime import datetime
 import requests
 import logging
 import os
@@ -14,13 +15,13 @@ __metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
-module: get_trial_balance_report
+module: run_late_notices_report
 
-short_description: Calls the FICS Mortgage Servicer special services API to create the trial balance report pdf at the desired location
+short_description: Calls the FICS Mortgage Servicer batch service API to create the late notices report pdf at the desired location
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "1.0.3"
+version_added: "1.0.7"
 
 description:
     - Calls the FICS Mortgage Servicer special services API to create the trial balance report pdf at the desired location
@@ -53,9 +54,9 @@ options:
 """
 
 EXAMPLES = r"""
-- name: get_trial_balance_report
-  get_trial_balance_report:
-    dest: /mnt/fics/etc/trial_balance_report.pdf
+- name: Run the Late Notices Report via FICS API
+  run_late_notices_report:
+    dest: /mnt/fics/Mortgage Services/etc/trial_balance_report.pdf
     batch_service_api_url: http://mortgageservicer.fics/BatchService.svc/REST/
     api_token: ASDFASDFJSDFSHFJJSDGFSJGQWEUI123123SDFSDFJ12312801C15034264BC98B33619F4A547AECBDD412D46A24D2560D5EFDD8DEDFE74325DC2E7B156C60B942
     api_log_directory: /mnt/fics/etc/api_logs/
@@ -135,21 +136,18 @@ def call_api(base_url: str, method: str, endpoint: str, parameters: dict):
         return None
 
 
-def get_trial_balance_report(
-    api_url: str, api_token: str, api_log_directory: str
-) -> dict:
+def run_late_notices_report(api_log_directory: str, api_url: str, api_token: str, beginning_date: datetime, ending_date: datetime):
     params: dict = {
         "Message": {
-            "AllLoans": True,
-            "CreateHistory": True,
-            "NegativeTiBalanceLoans": False,
-            "IncludePif": False,
-            "LoanSort": False,
-            "LoanNameSort": False,
-            "InvestorLoanSort": False,
-            "BankInvestorGroupSort": True,
-            "PageBreakInvestor": False,
-            "ReportNotes": "",
+            "BeginningDate": beginning_date.strftime("%Y-%m-%dT%H:%M:%S"),
+            "EndingDate": ending_date.strftime("%Y-%m-%dT%H:%M:%S"),
+            "PrintLateNoticesLetter": True,
+            "UseLogo": True,
+            "IncludeReturnedCheckChargeFees": True,
+            "IncludeUnappliedBalance": True,
+            "IncludeUnpaidLateCharges": True,
+            "SelectedSortByType": 1,
+            "IncludeFACTAct": True,
             "Token": api_token,
         }
     }
@@ -158,7 +156,7 @@ def get_trial_balance_report(
         call_api,
         base_url=api_url,
         method="post",
-        endpoint="GetTrialBalanceReport",
+        endpoint="RunLateNoticesReport",
         parameters=params,
     )
 
@@ -195,12 +193,14 @@ def run_module():
     if module.check_mode:
         module.exit_json(**result)
 
-    trial_resp: dict = get_trial_balance_report(
-        api_url=api_url, api_token=api_token, api_log_directory=api_log_directory
+    ending_date: datetime = datetime.now()
+    beginning_date: datetime = datetime(year=ending_date.year, month=ending_date.month, day=1, hour=0, minute=0, second=0)
+    late_notice_resp: dict = run_late_notices_report(
+        api_url=api_url, api_token=api_token, api_log_directory=api_log_directory, beginning_date=beginning_date, ending_date=ending_date
     )
 
     try:
-        if trial_resp.get("ApiCallSuccessful", None):
+        if late_notice_resp.get("ApiCallSuccessful", None):
             try:
                 os.makedirs(name=str(os.path.dirname(dest)), exist_ok=True)
             except Exception as e:
@@ -209,7 +209,7 @@ def run_module():
                     changed=False,
                     failed=True,
                 )
-            base64_file = trial_resp.get("Document", {}).get("DocumentBase64", None)
+            base64_file = late_notice_resp.get("LateNotice", {}).get("Document", {}).get("DocumentBase64", None)
             if base64_file:
                 txt_data = base64.b64decode(base64_file)
                 with open(module.params["dest"], "wb") as txt_file:
@@ -217,18 +217,18 @@ def run_module():
                 result["changed"] = True
                 result["failed"] = False
                 result["msg"] = f"Wrote file at {module.params['dest']}"
-                result["api_response"] = trial_resp
+                result["api_response"] = late_notice_resp
             else:
                 result["failed"] = True
                 result["msg"] = "no report file found in api response!"
-                result["api_response"] = trial_resp
+                result["api_response"] = late_notice_resp
 
         else:
             module.fail_json(
                 msg="API call unsuccessful",
                 changed=False,
                 failed=True,
-                api_response=trial_resp,
+                api_response=late_notice_resp,
             )
 
     except Exception as e:

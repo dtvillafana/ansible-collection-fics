@@ -56,7 +56,7 @@ EXAMPLES = r"""
   create_metro_2_file_and_report:
     special_service_api_url: http://mortgageservicer.fics
     api_token: ASDFASDFJSDFSHFJJSDGFSJGQWEUI123123SDFSDFJ12312801C15034264BC98B33619F4A547AECBDD412D46A24D2560D5EFDD8DEDFE74325DC2E7B156C60B942
-    api_log_directory: /mnt/fics/Mortgage Services/MS_TEST/Credit Bureau Reporting/archive/
+    api_log_directory: /mnt/fics/etc/archive/
 """
 
 RETURN = r"""
