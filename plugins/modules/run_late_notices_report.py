@@ -17,7 +17,7 @@ DOCUMENTATION = r"""
 ---
 module: run_late_notices_report
 
-short_description: Calls the FICS Mortgage Servicer batch service API to create the late notices report pdf at the desired location
+short_description: Calls the FICS Mortgage Servicer batch service API to create the late notices report and summary report PDFs at the desired locations
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
@@ -36,7 +36,11 @@ requirements:
 
 options:
     dest:
-        description: This is the full path to where the file will be created, it creates parent directories if they do not exist
+        description: This is the full path to where the late notices file will be created, it creates parent directories if they do not exist
+        required: true
+        type: str
+    summary_dest:
+        description: This is the full path to where the late notices summary file will be created, it creates parent directories if they do not exist
         required: true
         type: str
     batch_service_api_url:
@@ -56,7 +60,8 @@ options:
 EXAMPLES = r"""
 - name: Run the Late Notices Report via FICS API
   run_late_notices_report:
-    dest: /mnt/fics/Mortgage Services/etc/trial_balance_report.pdf
+    dest: /mnt/fics/Mortgage Services/etc/late_notices.pdf
+    summary_dest: /mnt/fics/Mortgage Services/etc/late_notices_summary.pdf
     batch_service_api_url: http://mortgageservicer.fics/BatchService.svc/REST/
     api_token: ASDFASDFJSDFSHFJJSDGFSJGQWEUI123123SDFSDFJ12312801C15034264BC98B33619F4A547AECBDD412D46A24D2560D5EFDD8DEDFE74325DC2E7B156C60B942
     api_log_directory: /mnt/fics/etc/api_logs/
@@ -164,6 +169,7 @@ def run_late_notices_report(api_log_directory: str, api_url: str, api_token: str
 def run_module():
     module_args = dict(
         dest=dict(type="str", required=True, no_log=False),
+        summary_dest=dict(type="str", required=True, no_log=False),
         batch_service_api_url=dict(type="str", required=True, no_log=False),
         api_token=dict(type="str", required=True, no_log=True),
         api_log_directory=dict(type="str", required=False, no_log=False),
@@ -209,10 +215,14 @@ def run_module():
                     changed=False,
                     failed=True,
                 )
-            base64_file = late_notice_resp.get("LateNotice", {}).get("Document", {}).get("DocumentBase64", None)
-            if base64_file:
-                txt_data = base64.b64decode(base64_file)
+            base64_late_notices_file = late_notice_resp.get("LateNotice", {}).get("Document", {}).get("DocumentBase64", None)
+            base64_late_notice_summary_file = late_notice_resp.get("LateNoticeSummaryReport", {}).get("Document", {}).get("DocumentBase64", None)
+            if base64_late_notices_file and base64_late_notice_summary_file:
+                txt_data = base64.b64decode(base64_late_notices_file)
                 with open(module.params["dest"], "wb") as txt_file:
+                    txt_file.write(txt_data)
+                txt_data = base64.b64decode(base64_late_notice_summary_file)
+                with open(module.params["summary_dest"], "wb") as txt_file:
                     txt_file.write(txt_data)
                 result["changed"] = True
                 result["failed"] = False
@@ -220,7 +230,7 @@ def run_module():
                 result["api_response"] = late_notice_resp
             else:
                 result["failed"] = True
-                result["msg"] = "no report file found in api response!"
+                result["msg"] = "One or more files missing from api response!"
                 result["api_response"] = late_notice_resp
 
         else:
