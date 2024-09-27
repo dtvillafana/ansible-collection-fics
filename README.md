@@ -6,3 +6,4 @@ Ansible collection for FICS products
 - create_metro_2_file_and_report
 - get_trial_balance_report
 - run_late_notices_report
+- get_advanced_selector_request
