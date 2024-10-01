@@ -7,3 +7,4 @@ Ansible collection for FICS products
 - get_trial_balance_report
 - run_late_notices_report
 - get_advanced_selector_request
+- process_window_object_data

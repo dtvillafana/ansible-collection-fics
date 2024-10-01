@@ -35,9 +35,10 @@ requirements:
 
 options:
     query_list:
-        description: This is the full path to where the file will be created, it creates parent directories if they do not exist
+        description: this is a list of dictionaries (maps) that contain the query parameters
         required: true
-        type: str
+        type: list
+        elements: dict
     core_api_url:
         description: This is the URL of the desired API
         required: true
@@ -53,8 +54,8 @@ options:
 """
 
 EXAMPLES = r"""
-- name: get_trial_balance_report
-  get_trial_balance_report:
+- name: get_advanced_selector_request
+  get_advanced_selector_request:
     query_list:
       - { key: val, key1: val1 }
       - { key0: val0, key2: val2 }
