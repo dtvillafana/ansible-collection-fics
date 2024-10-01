@@ -292,7 +292,7 @@ def run_module():
     )
     if payoff_resp.get("ApiCallSuccessful", None):
         mail_name = payoff_resp.get("Data", {}).get("MailingCorrName", {}).replace(" ", "_") if payoff_resp.get("Data", {}).get("MailingCorrName", {}) else loan_name
-        rest_of_name: str = str(loan_id) + datetime.now().strftime("%Y-%m-%d") + '_payoff_statement.pdf'
+        rest_of_name: str = "_" + str(loan_id) + "_" + datetime.now().strftime("%Y-%m-%d") + '_payoff_statement.pdf'
         file_name: str = mail_name + rest_of_name
         with open(os.path.join(dest, file_name), 'wb') as f:
             f.write(base64.b64decode(payoff_resp["Document"]["DocumentBase64"]))
