@@ -46,6 +46,10 @@ options:
         description: this is the api token used for authentication to the API
         required: true
         type: str
+    api_log_directory:
+        description: this is the directory that the API logs will be created in
+        required: false
+        type: str
 """
 
 EXAMPLES = r"""

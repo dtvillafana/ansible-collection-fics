@@ -50,7 +50,10 @@ options:
         description: this is the date the application is due
         required: true
         type: str
-
+    api_log_directory:
+        description: this is the directory that the API logs will be created in
+        required: false
+        type: str
 """
 
 EXAMPLES = r"""
