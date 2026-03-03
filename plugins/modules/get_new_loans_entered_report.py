@@ -4,8 +4,6 @@
 #                      David Villafaña <david.villafana@capcu.org>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 from __future__ import absolute_import, division, print_function
-from dataclasses import dataclass
-from dataclasses import astuple
 from ansible.module_utils.basic import AnsibleModule
 from typing import Callable, Any
 import requests
