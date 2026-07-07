@@ -17,22 +17,22 @@ __metaclass__ = type
 
 DOCUMENTATION = r"""
 ---
-module: get_interest_accrual_report
+module: get_account_history_report
 
-short_description: Calls the FICS Mortgage Servicer special services API to generate a document containing all the Interest Accrual Reports.
+short_description: Calls the FICS Mortgage Accountant special services API to generate a document containing the Account History Report.
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "3.3.0"
+version_added: "3.9.0"
 
 description:
-    - Calls the FICS Mortgage Servicer special services API to create the Interest Accrual Reports file at the specified destination.
+    - Calls the FICS Mortgage Accountant special services API to create the Account History Report file at the specified destination.
     - Disclaimer: this module has only been tested for our exact use case
 
 author:
     - Conrad Mercer
 
-requirements: [ ]
+requirements: [requests]
 
 options:
     dest:
@@ -47,10 +47,6 @@ options:
         description: this is the api token used for authentication to the API
         required: true
         type: str
-    api_due_date:
-        description: this is the date the application is due
-        required: true
-        type: str
     api_log_directory:
         description: this is the directory that the API logs will be created in
         required: false
@@ -63,7 +59,6 @@ EXAMPLES = r"""
     dest: /mnt/fics_deliq/IT/Backups/fics/interest_accrual_report.pdf
     fics_api_url: http://mortgageservicer.fics/BatchService.svc/REST/
     api_token: ASDFASDFJSDFSHFJJSDGFSJGQWEUI123123SDFSDFJ12312801C15034264BC98B33619F4A547AECBDD412D46A24D2560D5EFDD8DEDFE74325DC2E7B156C60B942
-    api_due_date: 2026-01-31T23:59:59"
     api_log_directory: /tmp/api_logs/
 """
 
