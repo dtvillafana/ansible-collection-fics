@@ -23,7 +23,7 @@ short_description: Calls the FICS Mortgage Accountant special services API to ge
 
 # If this is part of a collection, you need to use semantic versioning,
 # i.e. the version is of the form "2.5.0" and not "2.4".
-version_added: "3.10.0"
+version_added: "3.9.0"
 
 description:
     - Calls the FICS Mortgage Accountant special services API to create the General Ledger Report file at the specified destination.
@@ -55,8 +55,8 @@ options:
 
 EXAMPLES = r"""
 - name: create file to send
-  get_interest_accrual_report:
-    dest: /mnt/fics_deliq/IT/Backups/fics/interest_accrual_report.pdf
+  get_general_ledger_report:
+    dest: /mnt/fics_deliq/IT/Backups/fics/general_ledger_report.pdf
     fics_api_url: http://mortgageservicer.fics/BatchService.svc/REST/
     api_token: ASDFASDFJSDFSHFJJSDGFSJGQWEUI123123SDFSDFJ12312801C15034264BC98B33619F4A547AECBDD412D46A24D2560D5EFDD8DEDFE74325DC2E7B156C60B942
     api_log_directory: /tmp/api_logs/
@@ -67,7 +67,7 @@ msg:
     description: The result message of the download operation
     type: str
     returned: always
-    sample: '"Wrote files to /mnt/fics_deliq/IT/Backups/fics/interest_accrual_report.pdf"'
+    sample: '"Wrote files to /mnt/fics_deliq/IT/Backups/fics/general_ledger_report.pdf"'
 changed:
     description: Whether any local files were changed
     type: bool
